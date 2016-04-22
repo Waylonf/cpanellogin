@@ -1,0 +1,251 @@
+[%
+
+#----------------------------------------------------------------------
+# Arguments (probably *not* a complete list!) that this template accepts:
+#
+#   allow_login_autocomplete
+#   app_name
+#   goto_uri
+#   goto_app
+#   display_locales
+#   https
+#   login_messages
+#   logout
+#   msg_code
+#   reset_pass
+
+USE DataURI;
+USE JSON;
+
+SET disp_apps = {
+    'whostmgrd' => 'WHM',
+    'webmaild' => 'Webmail',
+    'cpaneld' => 'cPanel',
+};
+SET disp_app  = disp_apps.item(app_name) || 'cPanel';
+
+SET app_images = {
+    'whostmgrd' => 'whm-logo_white.svg',
+    'webmaild'  => 'webmail-logo.svg',
+    'cpaneld'   => 'cpanel-logo.svg',
+};
+
+# get app modules based on $app_name
+SET app_image = app_images.$app_name || app_images.cpaneld;
+SET app_image = MagicRevision(get_theme_url("images/" _ app_image));
+
+#If msg_code is 'link_account' we already have a separate display notice so don't need to show it twice
+SET shownotice = logout || msg_code;
+SET shownotice = msg_code == 'link_account' ? 0 : shownotice;
+SET notice_message = msg_code
+    ? (login_messages.$msg_code || locale.maketext('An authorization error occurred. Please try again.') )
+    : locale.maketext('You have logged out.');
+
+SET login_target = (goto_uri=='/') ? '_top' : '_self';
+
+#Windows XP doesn't have the fancy arrows, so use ellipsis for now.
+SET more_locales_symbol = "…";
+
+# Only run the display_locales function once by saving it into all_display_locales
+SET all_display_locales = display_locales;
+
+PROCESS "templates/external_auth_header.tmpl";
+
+SET login_classes = [];
+IF reset_pass;
+    login_classes.push('has-pw-reset');
+END;
+UNLESS external_auth_modules;
+    login_classes.push('no-external-auth-modules');
+END;
+
+-%]
+
+<input type="hidden" id="goto_uri" value="[% goto_uri FILTER html %]" />
+<input type="hidden" id="goto_app" value="[% goto_app FILTER html %]" />
+<!-- Do not remove msg_code as it is needed for automated testing - msg_code:[[%- msg_code -%]]  -->
+<div id="login-wrapper" class="group [% login_classes.join(' ') %]">
+    <div class="wrapper">
+    <div id="notify">
+        <noscript>
+            <div class="error-notice">
+                <img src="[% MagicRevision(get_theme_url('images/notice-error.png')) %]" alt="Error" align="left"/>
+                [% locale.maketext('JavaScript is disabled in your browser.') %]
+                [% locale.maketext('For [_1] to function properly, you must enable JavaScript.', disp_app) %]
+                [% locale.maketext('If you do not enable JavaScript, certain features in [_1] will not function correctly.', disp_app) %]
+            </div>
+            </noscript>
+        [% IF msg_code == 'link_account' %]
+        <div id="link-account">
+            <div class="content-wrapper">
+                [% IF user_info_payload.picture %]
+                  [% IF user_info_payload.picture.match('https://') %]
+                    <span class='link-account-avatar' style="background-size: 100% 100%; background-image:url([% user_info_payload.picture FILTER html %])"></span>
+                  [% ELSE %]
+                    <span class='link-account-avatar' style="background-image:url('data:image/*;base64,[% user_info_payload.picture %]')"></span>
+                  [% END %]
+                [% END %]
+                [% IF existing_link_count %]
+                  [% locale.maketext('Your account “[_1]” is already associated with an existing “[_2]” account. Please log in to connect a new account.' , preferred_username , disp_app); %]
+                [% ELSE %]
+                  [% locale.maketext('Your account “[_1]” is not associated with an existing “[_2]” account. Please log in to connect the account.' , preferred_username , disp_app); %]
+                [% END %]
+            </div>
+        </div>
+        [% END %]
+        <div id='login-status' class="[% logout ? 'success-notice' : 'error-notice' %]" style="visibility: [% shownotice ? 'visible' : 'hidden' %]">
+            <div class="content-wrapper">
+                <div id="login-detail">
+                    <div id="login-status-icon-container"><span class='login-status-icon'></span></div>
+                    <div id="login-status-message">[% notice_message %]</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="display:none">
+        <div id="locale-container" style="visibility:hidden">
+            <div id="locale-inner-container">
+                <div id="locale-header">
+                    <div class="locale-head">[% locale.maketext('Please select a locale:') %]</div>
+                    <div class="close"><a href="javascript:void(0)" onclick="toggle_locales(false)">X [% locale.maketext('Close') %]</a></div>
+                </div>
+                <div id="locale-map">
+                    <div class="scroller clear">
+                        [% FOREACH cur_loc = all_display_locales %]
+                            <div class="locale-cell"><a href="?locale=[% cur_loc.tag %]">[% cur_loc.name %]</a></div>
+                        [% END %]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content-container">
+        <div id="login-container">
+
+            <div id="login-sub-container">
+                    <div id="login-sub-header">
+                        <img class="main-logo" src="[% app_image %]" alt="logo" />
+                    </div>
+                    <div id="login-sub">
+                        <div id="clickthrough_form" style="visibility:hidden">
+                            <form action="javascript:void(0)">
+                                <div class="notices"></div>
+                                <button type="submit" class="clickthrough-cont-btn">[% locale.maketext('Continue') -%]</button>
+                            </form>
+                        </div>
+                        <div id="forms">
+                            [% IF reset_pass -%]
+                                <form novalidate id="reset_form" action="/resetpass" method="post" style="visibility:hidden">
+                                    <div class="input-req-login"><label for="reset_pass_username">[% locale.maketext('Username') %]</label></div>
+                                    <div class="input-field-login icon reset-pass-container">
+                                        <input
+                                            name="user"
+                                            id="reset_pass_username"
+                                            class="std_textbox"
+                                            type="text"
+                                            autocomplete="off"
+                                            tabindex="1"
+                                            placeholder="[% locale.maketext('Enter your username.') %]"
+                                            required>
+                                    </div>
+                                    <div class="controls">
+                                        <div class="login-btn">
+                                            <button
+                                                name="login"
+                                                type="submit"
+                                                id="reset_submit"
+                                                tabindex="2">[% locale.maketext('Reset Password') %]</button>
+                                        </div>
+                                        <div class="reset-pw">
+                                            <a href="javascript:void(0)" onclick="return hide_reset();">[% locale.maketext('Cancel') %]</a>
+                                        </div>
+                                    </div>
+                                    <div class="clear" id="push"></div>
+                                </form>
+                            [% END -%]
+[%# Don't change the form action or the ids/names of the username and password fields.
+    Doing so will break browser-native login credential storage.
+-%]
+                            <form novalidate id="login_form" action="/login/" method="post" target="[% login_target %]">
+                                <div class="input-req-login"><label for="user">[% IF app_name=="webmaild" %][% locale.maketext('Email Address') %][% ELSE %][% locale.maketext('Username') %][% END %]</label></div>
+                                <div class="input-field-login icon username-container">
+                                    <input name="user" id="user" autofocus="autofocus" value="[% user FILTER html %]" placeholder="[% IF app_name=="webmaild" %][% locale.maketext('Enter your email address.') %][% ELSE %][% locale.maketext('Enter your username.') %][% END %]" class="std_textbox" type="text" [% allow_login_autocomplete ? '' : 'autocomplete="off"' %] tabindex="1" required>
+                                </div>
+                                <div class="input-req-login login-password-field-label"><label for="pass">[% locale.maketext('Password') %]</label></div>
+                                <div class="input-field-login icon password-container">
+                                    <input name="pass" id="pass" placeholder="[% IF app_name=="webmaild" %][% locale.maketext('Enter your email password.') %][% ELSE %][% locale.maketext('Enter your account password.') %][% END %]" class="std_textbox" type="password" tabindex="2" [% allow_login_autocomplete ? '' : 'autocomplete="off"' %] required>
+                                </div>
+                                <div class="controls">
+                                    <div class="login-btn">
+                                        <button name="login" type="submit" id="login_submit" tabindex="3">[% locale.maketext('Log in') -%]</button>
+                                    </div>
+
+                                    [% IF reset_pass -%]
+                                        <noscript><style type="text/css">
+                                            .reset-pw { display:none }
+                                        </style></noscript>
+                                        <div class="reset-pw">
+                                            <a href="javascript:void(0)" onclick="show_reset()">[% locale.maketext('Reset Password') %]</a>
+                                        </div>
+                                    [% END -%]
+                                </div>
+                                <div class="clear" id="push"></div>
+                            </form>
+                        <!--CLOSE forms -->
+                        </div>
+                    <!--CLOSE login-sub -->
+                    </div>
+                    [% PROCESS "templates/external_auth.tmpl" %]
+                <!--CLOSE wrapper -->
+                </div>
+            <!--CLOSE login-sub-container -->
+            </div>
+        <!--CLOSE login-container -->
+        </div>
+        <div id="locale-footer">
+            <div class="locale-container">
+                <noscript>
+                    <form method="get" action=".">
+                        <select name="locale">
+                            <option value="">[% locale.maketext('Change locale') %]</option>
+                            [% "<option value='${cur_loc.tag}'>${cur_loc.name}</option>" FOR cur_loc=all_display_locales -%]
+                        </select>
+                        <button style="margin-left: 10px" type="submit">[% locale.maketext('Change') %]</button>
+                    </form>
+                    <style type="text/css">#mobilelocalemenu, #locales_list {display:none}</style>
+                </noscript>
+                <ul id="locales_list">
+                    [% FOREACH cur_loc = all_display_locales %]
+                        [% LAST IF loop.index > 7 %]
+                        <li><a href="/?locale=[% cur_loc.tag %]">[% cur_loc.name.replace(' ','&nbsp;') %]</a></li>
+                    [% END %]
+                    <li><a href="javascript:void(0)" id="morelocale" onclick="toggle_locales(true)" title="[% locale.maketext('More locales') %]">[% more_locales_symbol %]</a></li>
+                </ul>
+                <div id="mobilelocalemenu">[% locale.maketext("Select a locale:") %]
+                    <a href="javascript:void(0)" onclick="toggle_locales(true)" title="[% locale.maketext('Change locale') %]">[% locale.get_language_tag_name() %]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--Close login-wrapper -->
+</div>
+<script>
+    var MESSAGES = [% JSON.stringify(login_messages) -%];
+
+    window.IS_LOGOUT = [% logout ? 'true' : 'false' %];
+
+[%# Must not include external javascript -jnk 06.20.09 -%]
+[%
+FOR file = ['login.js', 'jstz.min.js', 'cptimezone_optimized.js'];
+    SET js_url = get_theme_url("js-min/$file") || get_theme_url("js/$file");
+    IF js_url;
+        js_url = js_url.replace('^/','');
+        "\n//$file\n";
+        INSERT "$js_url";
+    END;
+END;
+-%]
+
+CPTimezone.reset_timezone();
+</script>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html dir="[% locale.get_html_dir_attr() %]">
+<head>
+<link rel="shortcut icon" href="[% MagicRevision(get_theme_url('favicon.ico')) FILTER html %]" type="image/x-icon" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<!-- EXTERNAL CSS -->
+<link href="[% MagicRevision(get_theme_url('fonts/open_sans/open_sans.min.css')) FILTER html %]" rel="stylesheet" type="text/css" />
+<link href="[% MagicRevision(get_theme_url('style_v2_optimized.css')) FILTER html %]" rel="stylesheet" type="text/css" />
+
+<title>[% locale.maketext('cPanel Password Reset') %]</title>
+</head>
+<body class="cp">
+<div id="login-wrapper">
+
+<div id="resetpass">
+    <div id="notify" [% IF !notice_text %]style="visibility:hidden"[% END %]>
+        <div id="login-status" class="[% notice_class || 'info-notice' %]">
+            <div id="login-detail">
+                <div id="login-status-icon-container"><span class="login-status-icon"></span></div>
+                <div id="login-status-message">[% notice_text %]</div>
+            </div>
+        </div>
+    </div>
+    <div id="login-container">
+        <div id="login-sub-container">
+            <div id="login-sub-header">
+                <img src="[% MagicRevision(get_theme_url('images/cpanel-logo.svg')) %]" height="50" alt="logo" />
+            </div>
+            <div id="login-sub">
+                [% PROCESS "templates/$page_to_show" %]
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="copyright">[% locale.maketext('Copyright©[output,nbsp][current_year] cPanel, Inc.') %]</div>
+</body>
+</html>

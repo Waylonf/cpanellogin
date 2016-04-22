@@ -1,0 +1,6 @@
+[%-
+
+USE ExternalAuthentication;
+SET external_auth_modules = https && !link_account ? ExternalAuthentication.get_enabled_and_configured_openid_provider_display_configurations() : [];
+
+-%]

@@ -1,0 +1,194 @@
+body{
+	background:#E6E6E6  url(images/bg.jpg) repeat-x ;
+	font-family:verdana,arial,helvetica,sans-serif;
+	font-size:10px;
+	text-align: center;
+}
+.body-content h1, .h1Title, #h1Title {
+width: 100%;
+margin:0 0 13px -11px;
+font-family:verdana, arial, helvetica, sans-serif;
+font-size:12px;
+font-weight:700;
+color:#000;
+clear:both;
+}
+.body-content h2,
+.body-content h4 {
+        margin:5px 0 3px -11px;
+}
+.body-content p,p {
+font-size:11px;
+}
+#header {
+    height:80px;
+	background:url(images/bg.gif) repeat-x;
+}
+#cpanel {
+background-color:#FFFFFF;
+border-color:#CCCCCC;
+border-style:solid;
+border-width:1px;
+margin:0 auto;
+padding:3px;
+width:763px;
+}
+#cpanel #border-efx {
+	border-bottom:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-top:1px solid #666;
+	border-left:1px solid #666;
+	text-align:left;
+}
+#cpanel #border-efx  #content{
+	padding:15px;
+	text-align:left;
+
+}
+table{
+	font-size:11px;
+}
+ul{
+	margin:0 0 0 20px;
+}
+ul li{
+	margin:0;
+	padding:0;
+	line-height:1.4;
+}
+h2{
+	margin:5px 0;
+	padding:0;
+	font-size:10px;
+}
+.highlight {
+background:#EEEEEE none repeat scroll 0%;
+border:1px solid #ACCCB8;
+margin-bottom:12px;
+padding:0 5px 15px;
+	font-size:10px;
+}
+h2{
+	margin:5px 0;
+	padding:0;
+	font-size:10px;
+}
+.accept{
+                background:url(/unprotected/images/accept.gif) no-repeat;
+width:16px;
+height:16px;
+}
+.reject{
+                background:url(/unprotected/images/reject.gif) no-repeat;
+width:16px;
+height:16px;
+}
+.yui-panel .bd p.validation_msg, .panel .bd p.validation_msg, .validation_msg {
+background:url(/unprotected/images/reject.gif) no-repeat left top;
+color:#FF0505;
+            border-bottom:solid 1px #eee;
+                  font-weight:bold;
+padding:0px 0 10px 20px;
+}
+.formverifyfailed {
+            background-color: #faa;
+                }
+
+.input-button{
+    background:url(images/button-bg.jpg) repeat-x top;
+    height:22px;
+    color: #014D5F;
+    vertical-align:middle;
+    margin-top:0px;
+    margin-left:4px;
+}
+.input-button:hover{
+    background:url(images/button-bg-over.jpg) repeat-x top;
+    height:22px;
+    color: #014D5F;
+    vertical-align:middle;
+    margin-top:0px;
+    margin-left:4px;
+    text-decoration:none;
+}
+
+.pass_bar_0 {
+        width: 0px;
+}
+.pass_bar_10 {
+        width: 10px;
+}
+.pass_bar_20 {
+        width: 20px;
+}
+.pass_bar_30 {
+        width: 30px;
+}
+.pass_bar_40 {
+        width: 40px;
+}
+.pass_bar_50 {
+        width: 50px;
+}
+.pass_bar_60 {
+        width: 60px;
+}
+.pass_bar_70 {
+        width: 70px;
+}
+.pass_bar_80 {
+        width: 80px;
+}
+.pass_bar_90 {
+        width: 90px;
+}
+.pass_bar_100 {
+        width: 100px;
+}
+.pass_bar_color_1 {
+        background-color: #EA0000;
+}
+.pass_bar_color_2 {
+        background-color: #FFCC00;
+}
+.pass_bar_color_3 {
+        background-color: #00CC33;
+}
+
+
+.progress_bar_base, .progress_barbig_base,.pass_bar_base {
+float:left;
+height: 10px;
+        text-align:left;
+}
+
+.progressbar, .progressbarbig, .pass_bar {
+    background-color: #fff;
+width:100px;
+height:10px;
+padding:0;
+margin:0;
+border: 1px solid #999;
+}
+.progressbarbig, .progress_barbig_base{
+height: 16px;
+}
+#passwdRating {
+width: 145px;
+float: left;
+}
+#passwdGen {
+float: right;
+       padding-top: 10px;
+}
+.largetext {
+        font-size: 16px;
+}  
+.status {
+	color:#00566a;
+    font-weight:700;
+}
+label {
+	cursor: pointer;
+}
+

@@ -1,0 +1,4 @@
+[% WRAPPER 'templates/_error_wrapper' -%]
+    <h2>[% locale.maketext('The service is unavailable.') %]</h2>
+    [% IF page_message%]<p>[% page_message FILTER html %]</p>[%END%]
+[% END -%]

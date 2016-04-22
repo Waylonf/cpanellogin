@@ -1,0 +1,10 @@
+[% WRAPPER 'templates/_error_wrapper' -%]
+    <p>[% locale.maketext('The requested page was not found.') %]</p>
+    <h2>[% locale.maketext('Possible reasons why you are seeing this page:') %]</h2>
+    <ul>
+        <li>[% locale.maketext('A bookmarked URL may have changed since you last visited.') %]</li>
+        <li>[% locale.maketext('The URL was entered incorrectly.') %]</li>
+        <li>[% locale.maketext('The URL was entered with inaccurate capitalization (URLs are [output,url,_1,case sensitive]).','http://wikipedia.org/wiki/Case_sensitivity') %]</li>
+    </ul>
+    <p>[% locale.maketext('Please re-check the URL you are trying to reach. ([output,url,_1,Go Back])', 'javascript:history.back()' ) %]</p>
+[% END -%]

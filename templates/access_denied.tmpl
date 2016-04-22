@@ -1,0 +1,8 @@
+[% WRAPPER 'templates/_error_wrapper' -%]
+    <h2>[% uri FILTER html %]</h2>
+    <p>[% locale.maketext('You do not have permission to access this page.') %]</p>
+    [% IF page_message %]
+      <blockquote>[% locale.makevar(page_message) %]</blockquote>
+    [% END %]
+
+[% END -%]

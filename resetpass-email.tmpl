@@ -1,0 +1,21 @@
+[% locale.maketext('Hello.') %]
+
+[% locale.maketext('You recently requested to reset your cPanel password.') %] [% locale.maketext('To complete your request, please take one of the following actions:') %]
+
+
+[%# The bullets are Unicode 25cf -%]
+● [% locale.maketext('Copy and paste the following code into the “Confirmation code” field in your browser: [_1]', confirmation_code) %]
+
+[% locale.maketext('or[comment,this is meant to be a horizontal separator of 2 things stacked vertically]') %]
+
+[% IF insecure_reset_link -%]
+● [% locale.maketext('Click one of the following links:') %]
+    [% locale.maketext('SSL reset link (recommended): [_1]', secure_reset_link) %]
+    [% locale.maketext('Non-SSL reset link: [_1]', insecure_reset_link) %]
+[% ELSE -%]
+● [% locale.maketext('Go to this URL: [_1]', secure_reset_link) %]
+[% END -%]
+
+[% locale.maketext('[output,strong,Please note]: For your protection, this email has been sent to all of the email addresses associated with your cPanel account.') %]
+
+[% locale.maketext('This password reset request originated from “[_1]”.', remote_addr) %]

@@ -1,0 +1,14 @@
+<div class="form-container">
+    <div class="input-req-login">
+        <label for="new_password">[% locale.maketext('This is your account’s new password:') %]</label>
+    </div>
+    <div class="input-field-login no-icon">
+        <input type="text" id="new-password" class="std_textbox" readonly="readonly" name="newpass" value="[% newpass FILTER html %]">
+    </div>
+    <p>[% locale.maketext('Please make a note of your new password. Changing this password affects all of the services associated with your [asis,cPanel] account, including [output,acronym,FTP,File Transfer Protocol], [output,acronym,SSH,Secure Shell], [asis,WebDAV], and [asis,MySQL].') %]</p>
+    <div class="controls">
+        <div class="login-btn">
+            <a class="loginbtn" href="/">[% locale.maketext('Log in') %]</a>
+        </div>
+    </div>
+</div>

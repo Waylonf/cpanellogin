@@ -1,0 +1,4 @@
+[% WRAPPER 'templates/_error_wrapper' -%]
+    [% referring_url = referrer FILTER html; -%]
+    <p>[% locale.maketext('You do not have permission to access this page from “[_1]”.', "<code>$referring_url</code>") %]</p>
+[% END -%]

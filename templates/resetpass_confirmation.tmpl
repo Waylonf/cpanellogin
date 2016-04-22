@@ -1,0 +1,21 @@
+<div id="forms">
+    <form id="reset_form" novalidate action="" method="post">
+        <!--prevent submit on Enter if login button is disabled-->
+        <input style="display:none" />
+
+        <input type="hidden" name="user" value="[% user FILTER html %]" />
+        <input type="hidden" name="action" value="reset" />
+
+        <div class="input-req-login"><label for="confirmation">[% locale.maketext('Confirmation code:') %]</label></div>
+        <div class="input-field-login no-icon">
+            <input name="confirm" type="text" class="std_textbox" id="confirmation" maxlength="16" required autocomplete="off">
+        </div>
+        <div class="controls">
+            <div id="confirm-submit-btn" class="login-btn">
+                <button type="submit" id="confirm-submit">[% locale.maketext('Submit') %]</button>
+            </div>
+            <div class="reset-pw"><a href="/">[% locale.maketext('Cancel') %]</a></div>
+        </div>
+        <div class="clear"></div>
+    </form>
+</div>

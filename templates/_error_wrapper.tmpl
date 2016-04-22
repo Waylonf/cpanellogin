@@ -1,0 +1,24 @@
+[%
+SET app_images = {
+    'whostmgrd' => 'whm-logo_white.svg',
+    'webmaild'  => 'webmail-logo.svg',
+    'cpaneld'   => 'cpanel-logo.svg',
+};
+
+SET app_image = app_images.$app_name || app_images.cpaneld;
+SET app_image = MagicRevision(get_theme_url("images/$app_image"));
+%]
+
+[% IF page_to_show != "access_denied" %]
+    <p class="logo"><img class="main-logo" src="[% app_image %]" alt="logo"></p>
+[% END %]
+
+
+<div class="error_notice">
+    <div id="error-wrapper">
+        <div id="error_msg_contents">
+            <h2>[% locale.maketext('HTTP error [_1]',http_status_code) %]</h2>
+[% content %]
+        </div>
+    </div>
+</div>

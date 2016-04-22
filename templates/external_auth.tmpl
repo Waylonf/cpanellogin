@@ -1,0 +1,50 @@
+[%-
+
+USE HTTP;
+
+# user - The cPanel user (or virtual user that is logged in)
+# parameterized_form - A dump of the postdata that is uri encoded
+# theme - The current cPanel theme that the user is using
+# goto_uri - The uri that the user requested
+SET query = {
+    'user' => user,
+    'theme' => theme,
+    'parameterized_form' => parameterized_form,
+    'goto_uri' => goto_uri,
+    'goto_app' => goto_app,
+};
+IF page_to_show == 'token_denied';
+    query.token_denied = 1;
+END;
+
+IF external_auth_modules.size > 0 && external_auth_modules
+
+%]
+<div id="external-auth-container">
+    <div class="or-separator">
+        <span class="or-separator-label">[% locale.maketext('OR[comment,this is a decoration separator, shortest form is best]') %]</span>
+        <span class="or-separator-secondary-label">[% locale.maketext("Log in via"); %]</span>
+    </div>
+    <div class="controls external-auth-items">
+        [% FOR auth_mod = external_auth_modules %]
+          [%
+          IF oidc_failed == auth_mod.provider_name;
+                # This must match use the same regex as unprotected/cpanel/js/login.js
+                IF ENV_REQUEST_URI.match('^\/(?:logout|login|openid_connect_callback)\/?');
+                    SET xauth_link = auth_mod.link.html();
+                ELSE;
+                    SET xauth_link = ENV_REQUEST_URI.html;
+                END;
+          ELSE;
+            SET xauth_link = auth_mod.link.html() _ '?' _ HTTP.make_query_string(query);
+          END; %]
+          <div class="external-auth-btn">
+              <a class="external-auth-link" href="[% xauth_link %]" title="[% auth_mod.label.html() %]" style="background-color:#[% auth_mod.color %];text-color:#[% auth_mod.textcolor %]">
+                  <i class="external-auth-icon" style="background-image:url(data:[% auth_mod.icon_type %];base64,[% auth_mod.icon %])"></i>
+                  <span class="external-auth-btn-label">[% auth_mod.label.html() %]</span>
+              </a>
+          </div>
+        [% END %]
+    </div>
+</div>
+[% END %]

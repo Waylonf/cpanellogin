@@ -1,0 +1,78 @@
+[% WRAPPER 'templates/_error_wrapper' -%]
+
+[% PROCESS "templates/external_auth_header.tmpl" %]
+
+    <!-- Do not remove msg_code as it is needed for automated testing - msg_code:[invalid_token]  -->
+    <h3>[% locale.maketext('Invalid Security Token') %]</h3>
+    <p>[% locale.maketext('The requested [output,acronym,URL,Uniform Resource Locator] does not contain your session’s correct security token.') %]</p>
+    <p>[% locale.maketext('You may have reached this error by copying and pasting a URL from a different cPanel, WHM, or Webmail session into your browser’s address bar. To resolve this situation, please take one of the following steps:') %]</p>
+    <ul class="options">
+        <li>[% locale.maketext('[output,url,_1,Go back one page,_2,_3] and reload the URL, making sure that the [output,class,/cpsess … /,_4] section of the URL remains the same.','javascript:history.back()','class','page-link','code') %]</li>
+        <li>[% locale.maketext('Re-enter your account’s password below. This will assign your session a new security token. This new token will prevent you from using other pages of this application that may be open in other tabs.') %]</li>
+    </ul>
+    <div id="token-forms">
+        <div class="pagevars">
+            <h3>[% locale.maketext('Request information') %]</h3>
+            <p>
+                [% dest_html = goto_uri FILTER html -%]
+                [% locale.maketext('Requested page: [_1]', dest_html) %]
+            </p>
+            [% IF form_ref.keys.size -%]
+                <table class="formtbl" cellspacing="6">
+                    <tr>
+                        <th>[% locale.maketext('Parameter name') %]</th>
+                        <th>[% locale.maketext('Parameter value') %]</th>
+                    </tr>
+                    [% FOR pair = form_ref -%]
+                    <tr><td>[% pair.key FILTER html %]</td><td>[% pair.value FILTER html %]</td></tr>
+                    [% END -%]
+                </table>
+            [% END -%]
+        </div>
+
+        <div id="login-container">
+          <div id="login-sub-container">
+            <form id="badtokenloginform" action="/login" method="POST">
+                <input type="hidden" name="user" value="[% user FILTER html %]" />
+                <input type="hidden" name="token_denied" value="1" />
+                <input type="hidden" name="parameterized_form" value="[% parameterized_form FILTER html %]" />
+                <input type="hidden" name="goto_uri" value="[% goto_uri FILTER html %]" />
+                <input type="hidden" name="theme" value="[% theme FILTER html %]" />
+                <p>[% locale.maketext('Username: [_1]', user) FILTER html %]</p>
+                <div class="control_container">
+                    <div class="group">
+                    <div class="controls">
+                        <div class="input-field-login icon password-container">
+                            <input name="pass" id="pass" placeholder="[% IF app_name=="webmaild" %][% locale.maketext('Enter your email password.') %][% ELSE %][% locale.maketext('Enter your account password.') %][% END %]" class="std_textbox" type="password" autofocus required>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="group">
+                    <div class="controls">
+                        <div class="login-btn" id="proceed_btn_container">
+                            <button type="submit" id="token-submit">[% locale.maketext('Proceed with the Current Request') %]</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </form>
+
+            [% PROCESS "templates/external_auth.tmpl" %]
+
+            <form id="badtokenlogoutform"  action="/logout" target="_top">
+                <div class="control_container">
+                    <div class="controls">
+                        <div class="login-btn" id="logout_btn_container">
+                            <button type="submit" id="logout-btn">[% locale.maketext('Log Out') %]</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+          </div>
+        </div>
+    </div>
+
+    <script>
+        try { document.getElementById("pass").focus(); } catch(e) {}
+    </script>
+[% END %]

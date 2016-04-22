@@ -1,0 +1,111 @@
+[% USE DataURI -%]
+<!DOCTYPE html>
+<html dir="[% locale.get_html_dir_attr() %]">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>[% locale.maketext('cPanel Password Reset') %]</title>
+<style>
+h1 {
+    margin-bottom: 10px;
+    color: black;
+    font-size:16px;
+}
+a {
+    color:#3F77F0;
+}
+body {
+    margin: 0;
+    background-color: #f4f4f4;
+    font-family: Helvetica, arial, sans-serif;
+    font-size: 12px;
+    color: #333333;
+    line-height: 18px;
+}
+
+div.main-area {
+    width: 620px;
+    border: 0;
+    margin: 0 auto;
+}
+div.main-footer {
+    padding-top: 20px;
+    color: #888888;
+    text-align: center;
+}
+
+div.interior-content {
+    background-color: white;
+    border: 2px solid #e8e8e8;
+    padding: 20px;
+}
+div.interior-header {
+    padding-bottom: 4px;
+}
+div.interior-footer {
+    border-top: 1px solid black;
+    padding-top: 20px;
+}
+
+p.pre-links {
+    margin-bottom: 4px;
+}
+ul.links {
+    margin-top: 0;
+}
+ul.links li {
+    list-style-type: none;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.conf-code {
+    display: inline-block;
+    font-family: monospace;
+    outline: 1px solid #dddddd;
+    margin-left: 3px;
+    padding: 1px 3px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="main-area">
+    <h1>[% locale.maketext('Password Reset') %]</h1>
+
+    <div class="interior-content">
+        <div class="interior-header">
+            <p>[% locale.maketext('Hello.') %]</p>
+            <p>[% locale.maketext('You recently requested to reset your cPanel password.') %] [% locale.maketext('To complete your request, please take one of the following actions:') %]</p>
+        </div>
+
+        <p><b>&#x25cf;</b> [% locale.maketext('Copy and paste the following code into the “Confirmation code” field in your browser: [_1]', "<span class='conf-code'>$confirmation_code</span>") %]</p>
+
+        <span style="visibility:hidden"><b>&#x25cf;</b> </span><h3>[% locale.maketext('or[comment,this is meant to be a horizontal separator of 2 things stacked vertically]') %]</h3>
+[% IF insecure_reset_link -%]
+        <p class="pre-links"><b>&#x25cf;</b> [% locale.maketext('Click one of the following links:') FILTER html %]</p>
+        <ul class="links">
+            <li><a href="[% secure_reset_link FILTER html -%]" target="_blank">[% locale.maketext('SSL Reset Link (recommended)') %]</a></li>
+            <li><a href="[% insecure_reset_link FILTER html -%]" target="_blank">[% locale.maketext('Non-SSL Reset Link') %]</a></li>
+        </ul>
+[% ELSE -%]
+        <p><b>&#x25cf;</b> [% locale.maketext('Click [output,url,_1,this secure link].',secure_reset_link) -%]</p>
+[% END -%]
+
+        <div class="interior-footer">
+            <p>[% locale.maketext('[output,strong,Please note]: For your protection, this email has been sent to all of the email addresses associated with your cPanel account.') %]</p>
+            <p>[% locale.maketext('You requested to reset the password from the following IP address: [_1]', remote_addr) %]</p>
+        </div>
+    </div>
+
+    <div class="main-footer">
+        <img src="[% DataURI.datauri(get_theme_url('images/cpanel-logo-tiny.png'),'image/png') %]" alt="cPanel">
+        <p>[% locale.maketext('Copyright©[output,nbsp][current_year] cPanel, Inc.') %]</p>
+    </div>
+</div>
+
+</body>
+</html>

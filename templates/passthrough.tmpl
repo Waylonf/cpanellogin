@@ -1,0 +1,26 @@
+    <div class="error_notice">
+        <div id="error-wrapper">
+            <h1>[% locale.maketext('Security token updated.') %]</h1>
+            <p>[% locale.maketext('Your login credentials have been validated. You are being redirected to the correct page …') %]</p>
+            <form action="[% cp_security_token %][% goto_uri FILTER html %]" method="post" name="passthroughform">
+            [% FOR pair=form_ref -%]
+                <input type="hidden" name="[% pair.key FILTER html %]" value="[% pair.value FILTER html %]" />
+            [% END -%]
+            </form>
+            <script type="text/javascript">
+                // Reset frame locations for WHM
+                function reloadFrames() {
+                    if (top.commander && top.commander.location.href.match('scripts/command$')) {
+                        top.commander.location = "[% cp_security_token %]/scripts/command";
+                    }
+
+                    if (top.topFrame && top.topFrame.location.href.match('scripts/command[?]PFILE=topframe$')) {
+                        top.topFrame.location = "[% cp_security_token %]/scripts/command?PFILE=topframe";
+                    }
+                };
+
+                reloadFrames();
+                document.passthroughform.submit();
+            </script>
+        </div>
+    </div>
